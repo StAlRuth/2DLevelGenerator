@@ -1,25 +1,25 @@
+#ifndef MAZE_HPP
+#define MAZE_HPP
+#include "CompareVector2uLess.hpp"
 #include <SFML/Graphics.hpp>
 #include <map>
 
-class CompareVector2uLess
-{
-	public:
-		bool operator()(sf::Vector2u a, sf::Vector2u b) const
-		{
-			return a.y == b.y ? a.x < b.x : a.y < b.y;
-		}
-};
+class MazeGenerationAlgorithm;
 
 class Maze : public sf::Drawable
 {
+	friend class MazeGenerationAlgorithm;
 	public:
-		Maze();
+		Maze(MazeGenerationAlgorithm* generator = NULL);
 		sf::Vector2u getPlayerPos();
+		sf::Vector2u getStairPos();
 		void movePlayer(char direction);
 	private:
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		void updateVertexArray();
 		std::map<sf::Vector2u, char, CompareVector2uLess> tiles_;
 		sf::VertexArray vertices_;
-		void generate();
+		MazeGenerationAlgorithm* generator_;
+		sf::Vector2u dimensions_;
 };
+#endif/*MAZE_HPP*/

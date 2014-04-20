@@ -2,11 +2,14 @@ The A-Maze-ing Game
 ===================
 (I know the pun is terrible, I couldn't resist)
 
-"The A-Maze-ing Game" is not so much a game (although it can function as one)
-as a collection of maze creating algorithms with a renderer and game tacked on.
+This is a program that not only generates mazes that can be solved, it can also create dungeons and other kinds of 2D level...
 
-In the future, maze generators will be changeable, and the solve function
-will actually be implemented.  One day.
+If the area of the "Maze" was big enough.
+
+In the future, maze/level generators will be changeable in-app.
 
 Maze Generation Algorithms Implemented:
-- Kruskal's Algorithm
+- Modified Kruskal's Algorithm
+
+Other Level Generation Algorithms implemented:
+- It's a room with a starting point and some stairs

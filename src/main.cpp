@@ -1,13 +1,16 @@
 #include <cstdlib>
 #include <ctime>
 #include <SFML/Graphics.hpp>
-#include "maze.hpp"
+#include "Maze.hpp"
+#include "MazeGenerationAlgorithm.hpp"
+#include "ModifiedKruskalsMazeGen.hpp"
 
 int main()
 {
 	std::srand(std::time(0));
 	sf::RenderWindow app(sf::VideoMode(15*32, 15*32), "Maze");
-	Maze maze;
+	ModifiedKruskalsMazeGen generator;
+	Maze maze(&generator);
 	while(app.isOpen())
 	{
 		sf::Event event;
