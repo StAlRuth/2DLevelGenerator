@@ -3,7 +3,7 @@
 #include <SFML/System.hpp>
 #include <map>
 
-void ModifiedKruskalsMazeGen::generate(Maze* level)
+void ModifiedKruskalsMazeGen::generate(Level* level)
 {
 	//Set up the skeleton - intersections only, everything else is a wall
 	for(int i = 0; i < 15; i++)
@@ -12,11 +12,11 @@ void ModifiedKruskalsMazeGen::generate(Maze* level)
 		{
 			if(i % 2 == 1 && j % 2 == 1)
 			{
-				setMazeTile(level, sf::Vector2u(i, j), 0);
+				setLevelTile(level, sf::Vector2u(i, j), 0);
 			}
 			else
 			{
-				setMazeTile(level, sf::Vector2u(i, j), 1);
+				setLevelTile(level, sf::Vector2u(i, j), 1);
 			}
 		}
 	}
@@ -72,7 +72,7 @@ void ModifiedKruskalsMazeGen::generate(Maze* level)
 		sf::Vector2u hall(int1.x+diff.x, int1.y+diff.y);
 		
 		//Check if the path has already been cleared
-		if(getMazeTile(level, hall) == 0)
+		if(getLevelTile(level, hall) == 0)
 		{
 			continue;
 		}
@@ -101,7 +101,7 @@ void ModifiedKruskalsMazeGen::generate(Maze* level)
 		}
 		
 		//Clear the path
-		setMazeTile(level, hall, 0);
+		setLevelTile(level, hall, 0);
 		
 		//Check if all intersections are connected
 		bool done = true;
@@ -118,6 +118,6 @@ void ModifiedKruskalsMazeGen::generate(Maze* level)
 			break;
 		}
 	}
-	setMazeTile(level, sf::Vector2u(1, 1), 2);
-	setMazeTile(level, sf::Vector2u((15-2), (15-2)), 3);
+	setLevelTile(level, sf::Vector2u(1, 1), 2);
+	setLevelTile(level, sf::Vector2u((15-2), (15-2)), 3);
 }

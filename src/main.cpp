@@ -1,16 +1,16 @@
 #include <cstdlib>
 #include <ctime>
 #include <SFML/Graphics.hpp>
-#include "Maze.hpp"
-#include "MazeGenerationAlgorithm.hpp"
+#include "Level.hpp"
+#include "LevelGenerationAlgorithm.hpp"
 #include "ModifiedKruskalsMazeGen.hpp"
 
 int main()
 {
 	std::srand(std::time(0));
-	sf::RenderWindow app(sf::VideoMode(15*32, 15*32), "Maze");
+	sf::RenderWindow app(sf::VideoMode(15*32, 15*32), "Level");
 	ModifiedKruskalsMazeGen generator;
-	Maze maze(&generator);
+	Level level(&generator);
 	while(app.isOpen())
 	{
 		sf::Event event;
@@ -28,24 +28,24 @@ int main()
 				}
 				else if(event.key.code == sf::Keyboard::Down)
 				{
-					maze.movePlayer(0);
+					level.movePlayer(0);
 				}
 				else if(event.key.code == sf::Keyboard::Right)
 				{
-					maze.movePlayer(1);
+					level.movePlayer(1);
 				}
 				else if(event.key.code == sf::Keyboard::Up)
 				{
-					maze.movePlayer(2);
+					level.movePlayer(2);
 				}
 				else if(event.key.code == sf::Keyboard::Left)
 				{
-					maze.movePlayer(3);
+					level.movePlayer(3);
 				}
 			}
 		}
 		app.clear(sf::Color(0, 0, 0));
-		app.draw(maze);
+		app.draw(level);
 		app.display();
 	}
 	return 0;

@@ -1,12 +1,12 @@
 #ifndef MODIFIEDKRUSKALSMAZEGEN_HPP
 #define MODIFIEDKRUSKALSMAZEGEN_HPP
 
-#include "MazeGenerationAlgorithm.hpp"
+#include "LevelGenerationAlgorithm.hpp"
 
-class ModifiedKruskalsMazeGen : public MazeGenerationAlgorithm
+class ModifiedKruskalsMazeGen : public LevelGenerationAlgorithm
 {
 	private:
-		void generate(Maze* level);
+		void generate(Level* level);
 };
 
 #endif/*MODIFIEDKRUSKALSMAZEGEN_HPP*/

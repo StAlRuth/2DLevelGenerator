@@ -1,14 +1,14 @@
-#include "Maze.hpp"
-#include "MazeGenerationAlgorithm.hpp"
+#include "Level.hpp"
+#include "LevelGenerationAlgorithm.hpp"
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
 
-Maze::Maze(MazeGenerationAlgorithm* generator):generator_(generator),dimensions_(15, 15)
+Level::Level(LevelGenerationAlgorithm* generator):generator_(generator),dimensions_(15, 15)
 {
 	if(generator_ == NULL)
 	{
-		MazeGenerationAlgorithm gen;
+		LevelGenerationAlgorithm gen;
 		gen(this);
 	}
 	else
@@ -17,7 +17,7 @@ Maze::Maze(MazeGenerationAlgorithm* generator):generator_(generator),dimensions_
 	}
 }
 
-sf::Vector2u Maze::getPlayerPos()
+sf::Vector2u Level::getPlayerPos()
 {
 	for(std::map<sf::Vector2u, char, CompareVector2uLess>::iterator
 			i = tiles_.begin(); i != tiles_.end(); i++)
@@ -31,7 +31,7 @@ sf::Vector2u Maze::getPlayerPos()
 	return sf::Vector2u(0, 0);
 }
 
-sf::Vector2u Maze::getStairPos()
+sf::Vector2u Level::getStairPos()
 {
 	for(std::map<sf::Vector2u, char, CompareVector2uLess>::iterator
 			i = tiles_.begin(); i != tiles_.end(); i++)
@@ -45,7 +45,7 @@ sf::Vector2u Maze::getStairPos()
 	return sf::Vector2u(0, 0);
 }
 
-void Maze::movePlayer(char direction)
+void Level::movePlayer(char direction)
 {
 	sf::Vector2u pos(0, 0);
 	for(std::map<sf::Vector2u, char, CompareVector2uLess>::iterator i = tiles_.begin(); i != tiles_.end(); i++)
@@ -85,20 +85,20 @@ void Maze::movePlayer(char direction)
 		tiles_.clear();
 		if(generator_ == NULL)
 		{
-			MazeGenerationAlgorithm gen;
+			LevelGenerationAlgorithm gen;
 			gen(this);
 		}
 		else
 		{
 			generator_->operator()(this);
 		}
-		//We leave now so that we don't rerender the maze again
+		//We leave now so that we don't rerender the Level again
 		return;
 	}
 	updateVertexArray();
 }
 
-void Maze::updateVertexArray()
+void Level::updateVertexArray()
 {
 	vertices_.setPrimitiveType(sf::Quads);
 	vertices_.resize(15*15*4);
@@ -136,7 +136,7 @@ void Maze::updateVertexArray()
 	}
 }
 
-void Maze::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(vertices_, states);
 }
