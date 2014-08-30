@@ -13,3 +13,5 @@ Other Level Generation Algorithms implemented:
 
 Note that in this game, the player is BLUE, the stairs are GREEN, and walls are RED.
 Arrow keys move the player, reach the stairs to generate another level.
+
+This program uses SFML 2 for rendering, and as such the system, window, and graphics libraries must be present during the building process.
