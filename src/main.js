@@ -13,8 +13,6 @@ function Vector(x, y) {
     }
 }
 
-var scale = Math.min(window.innerWidth, window.innerHeight) / 16;
-
 function VectorMap() {
     this.vec_ = {}
 
@@ -45,8 +43,13 @@ function VectorMap() {
 }
 
 function level() {
+    this.dimensions_ = new Vector(15,15)
     this.tiles_ = new VectorMap()
 
+    this.getLevelDimensions = function(level) {
+        return this.dimensions_;
+    }
+    
     this.iterate = function(subfunction) {
         keys = this.tiles_.keys();
         for (i = 0; i < keys.length; i++) {
@@ -92,29 +95,30 @@ function level() {
                 break;
         }
         if (this.tiles_.get(movepos) == 0) {
-        
-            void document.body.offsetWidth;
-            document.body.classList.remove("earthquake");
-            void document.body.offsetWidth;
-            document.body.classList.add("earthquake");
-            
-            if (Math.random() > 0.9) {
-                void document.body.offsetWidth;
-                document.body.classList.remove("earthquake2");
-                void document.body.offsetWidth;
-                document.body.classList.add("earthquake2");
-            }
+            document.getElementById("walk").pause()
+            document.getElementById("walk").currentTime = 0
+            document.getElementById("walk").play();
             
             this.tiles_.set(pos, 0);
             this.tiles_.set(movepos, 2);
         } else if (this.tiles_.get(movepos) == 3) {
         
+            document.getElementById("lvlup").pause()
+            document.getElementById("lvlup").currentTime = 0
+            document.getElementById("lvlup").play();
+            
             void document.body.offsetWidth;
             document.body.classList.remove("earthquake2");
             void document.body.offsetWidth;
             document.body.classList.add("earthquake2");
             
             this.tiles_ = new VectorMap();
+            
+            this.dimensions_.x += 2;
+            this.dimensions_.y += 2;
+            
+            rescale()
+            
             if (generator == null) {
                 gen = LevelGenerationBase;
                 gen(this);
@@ -124,6 +128,9 @@ function level() {
             //We leave now so that we don't rerender the Level again
             return;
         } else {
+            document.getElementById("hit").pause()
+            document.getElementById("hit").currentTime = 0
+            document.getElementById("hit").play();
             document.getElementById("overlay").classList.remove("splat");
             void document.getElementById("overlay").offsetWidth;
             document.getElementById("overlay").classList.add("splat");
@@ -174,8 +181,8 @@ function level() {
     this.vertices_ = []
     this.updateVertexArray = function() {
         this.vertices_ = []
-        for (i = 0; i < 15; i++) {
-            for (j = 0; j < 15; j++) {
+        for (i = 0; i < this.getLevelDimensions(level).x; i++) {
+            for (j = 0; j < this.getLevelDimensions(level).y; j++) {
                 quad = [];
                 quad.push({
                     position: new Vector(i * scale, j * scale)
@@ -215,6 +222,17 @@ function level() {
 
 }
 
+var scale = 0;
+
+function rescale() {
+    scale = Math.min(window.innerWidth, window.innerHeight) / (level.dimensions_.x);
+}
+
+window.onresize = function() {
+    rescale();
+}
+
+    
 window.onkeydown = function(e) {
     e = e || event
     switch (e.keyCode) {
@@ -244,7 +262,7 @@ function draw(level) {
 
             context.strokeStyle = cachedVertex[j]["color"];
             context.fillStyle = cachedVertex[j]["color"];
-            context.lineWidth = 0.1;
+            context.lineWidth = 1;
 
             context.lineTo(cachedVertex[j].position.x, cachedVertex[j].position.y);
 
@@ -284,30 +302,30 @@ function LevelGenerationBase() {
     //This function creates a single room with the player and staircase placed inside it.
     //This also serves as an example Level Generation Algorithm.
     this.generate = function(level) {
-        for (i = 0; i < getLevelDimensions(level).x; i++) {
-            for (j = 0; j < getLevelDimensions(level).y; j++) {
+        for (i = 0; i < this.getLevelDimensions(level).x; i++) {
+            for (j = 0; j < this.getLevelDimensions(level).y; j++) {
                 if (i == 0 || j == 0 ||
-                    i == getLevelDimensions(level).x - 1 ||
-                    j == getLevelDimensions(level).y - 1) {
+                    i == this.getLevelDimensions(level).x - 1 ||
+                    j == this.getLevelDimensions(level).y - 1) {
                     //Setting a tile is straightforward.
                     //The first parameter is the position of the
                     //tile provided as an new Vector, and the
                     //second one is the tile type as char.
                     //Setting a tile to 1 makes it a wall...
-                    setLevelTile(level, new Vector(i, j), 1);
+                    this.setLevelTile(level, new Vector(i, j), 1);
                 } else {
                     //Setting it to 0 makes it empty...
-                    setLevelTile(level, new Vector(i, j), 0);
+                    this.setLevelTile(level, new Vector(i, j), 0);
                 }
             }
         }
-        playerPos = new Vector((rand(getLevelDimensions(level).x - 2)) + 1,
-            (rand(getLevelDimensions(level).y - 2)) + 1);
-        stairsPos = new Vector((rand(getLevelDimensions(level).x - 2)) + 1,
-            (rand(getLevelDimensions(level).y - 2)) + 1);
+        playerPos = new Vector((rand(this.getLevelDimensions(level).x - 2)) + 1,
+            (rand(this.getLevelDimensions(level).y - 2)) + 1);
+        stairsPos = new Vector((rand(this.getLevelDimensions(level).x - 2)) + 1,
+            (rand(this.getLevelDimensions(level).y - 2)) + 1);
         while (playerPos.x == stairsPos.x && playerPos.y == stairsPos.y) {
-            stairsPos = new Vector((rand(getLevelDimensions(level).x - 2)) + 1,
-                (rand(getLevelDimensions(level).y - 2)) + 1);
+            stairsPos = new Vector((rand(this.getLevelDimensions(level).x - 2)) + 1,
+                (rand(this.getLevelDimensions(level).y - 2)) + 1);
         }
         //Setting it to 2 makes it the player's location
         //I currently do not have any guards against multiple player locations,
@@ -327,8 +345,8 @@ function LevelGenerationKruskal() {
 
     this.generate = function(level) {
         //Set up the skeleton - intersections only, everything else is a wall
-        for (i = 0; i < 15; i++) {
-            for (j = 0; j < 15; j++) {
+        for (i = 0; i < this.getLevelDimensions(level).x; i++) {
+            for (j = 0; j < this.getLevelDimensions(level).y; j++) {
                 if (i % 2 == 1 && j % 2 == 1) {
                     this.setLevelTile(level, new Vector(i, j), 0);
                 } else {
@@ -339,8 +357,8 @@ function LevelGenerationKruskal() {
         //Label every intersection so we can tell when they're connected
         groups = new VectorMap();
         group = 0;
-        for (i = 1; i < 15; i += 2) {
-            for (j = 1; j < 15; j += 2) {
+        for (i = 1; i < this.getLevelDimensions(level).x; i += 2) {
+            for (j = 1; j < this.getLevelDimensions(level).y; j += 2) {
                 groups.set(new Vector(i, j), group);
                 group++;
             }
@@ -355,8 +373,8 @@ function LevelGenerationKruskal() {
         while (true) {
             //Pick random intersection
             int1 = new Vector();
-            int1.x = rand((Math.floor(15 / 2)) * 2) + 1;
-            int1.y = rand((Math.floor(15 / 2)) * 2) + 1;
+            int1.x = rand((Math.floor(this.getLevelDimensions(level).x / 2)) * 2) + 1;
+            int1.y = rand((Math.floor(this.getLevelDimensions(level).y / 2)) * 2) + 1;
 
             //Pick random direction
             diff = new Vector();
@@ -440,7 +458,7 @@ function LevelGenerationKruskal() {
             }
         }
         this.setLevelTile(level, new Vector(1, 1), 2);
-        this.setLevelTile(level, new Vector((15 - 2), (15 - 2)), 3);
+        this.setLevelTile(level, new Vector((this.getLevelDimensions(level).x - 2), (this.getLevelDimensions(level).y - 2)), 3);
     }
 }
 
@@ -459,6 +477,11 @@ var level, generator;
 function main() {
     generator = new LevelGenerationKruskal();
     level = new level();
+    level.dimensions_.x = 5
+    level.dimensions_.y = 5
+    
+    rescale();
+
     generator.generate(level);
     window.requestAnimationFrame(animate);
 }
